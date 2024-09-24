@@ -36,14 +36,8 @@
                     </div>
                     <div class="w-full sm:w-half px-3">
                         <div class="mb-5">
-                            <label for="ram" class="form-label" title="Max value is 8 GB"> RAM </label>
-                            <select class="form-input"  title="Max value is 8 GB" selected="{{PROFILE_ram}}">
-                                <option value="" selected>No spoof</option>
-                                <option value="1">1 Gb</option>
-                                <option value="2">2 Gb</option>
-                                <option value="4">4 Gb</option>
-                                <option value="8">8 Gb</option>
-                            </select>
+                            <label for="ram" class="form-label"> RAM </label>
+                            <input class="form-input" id="ram" type="number" step="2" name="ram" min="0" max="16" placeholder="Gb" value="{{PROFILE_ram}}">
                         </div>
                     </div>
                 </div>
@@ -59,13 +53,13 @@
                     <div class="w-full sm:w-half px-3">
                         <div class="mb-5">
                             <label for="lat" class="form-label"> Latitude </label>
-                            <input class="form-input" type="number" step="0.000001" id="lat" name="lat" placeholder="Lat" value="{{PROFILE_lat}}" readonly required>
+                            <input class="form-input" type="number" step="0.000001" id="lat" name="lat" placeholder="Lat" value="{{PROFILE_lat}}" required>
                         </div>
                     </div>
                     <div class="w-full sm:w-half px-3">
                         <div class="mb-5">
                             <label for="lon" class="form-label"> Longitude </label>
-                            <input class="form-input" type="number" step="0.000001" id="lon" name="lon" placeholder="Lon" value="{{PROFILE_lon}}" readonly required>
+                            <input class="form-input" type="number" step="0.000001" id="lon" name="lon" placeholder="Lon" value="{{PROFILE_lon}}" required|>
                         </div>
                     </div>
                 </div>
@@ -87,7 +81,6 @@
 
                 document.getElementById('lat').value = Number((e.latlng.lat).toFixed(6));;
                 document.getElementById('lon').value = Number((e.latlng.lng).toFixed(6));
-                document.getElementById('accuracy').removeAttribute('disabled');
             }
 
             map.addLayer(layer);

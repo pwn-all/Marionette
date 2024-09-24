@@ -1,0 +1,13 @@
+{
+    "location": {
+        "Linux": "",
+        "Darwin": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+        "Windows": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe"
+    },
+    "default_args": [
+        "--no-first-run", "--silent-debugger-extension-api",
+        "--no-default-browser-check", "--ozone-platform-hint=auto",
+        "--enable-features=UseOzonePlatform",
+        "--webrtc-ip-handling-policy=disable_non_proxied_udp"
+    ]
+}

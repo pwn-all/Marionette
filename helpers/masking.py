@@ -4,18 +4,20 @@ from random import randint
 from shapely.geometry import shape, Point
 from timezonefinder import TimezoneFinder
 
+from aiohttp import ClientSession, ClientTimeout
+from aiohttp_socks import ProxyConnector as proxyC
+
 
 class SpoofingTemplates:
     def __init__(self) -> None:
         pass
 
-    def ram(self, value: int) -> str:
+    def ram(self, value: int) -> str:  # value:
         return f'''if (navigator.__defineGetter__) {{
     navigator.__defineGetter__('deviceMemory', function () {{
         return {value};
     }});
 }};'''
-
 
 
 class MaskingTools:
@@ -137,5 +139,39 @@ class MaskingTools:
                             'includeCommandLineAPI': True
                         }
                     })
+                case "storage":
+                    if not spoofing['hardware'][param]:
+                        continue
+                    emulations.append({
+                        'method': 'Emulation.setHardwareConcurrencyOverride',
+                        'params': {
+                            'hardwareConcurrency': spoofing['hardware'][param]
+                        }
+                    })
 
         return emulations
+
+    async def check_proxy(self, proxy: str) -> bool:
+        '''
+            Perform check if proxy is working
+
+            proxy: str - proxy url, like: socks5://user:pass@127.0.0.1:9050
+
+            Return `bool`, as logical result
+        '''
+
+        kwargs = {
+            'connector': proxyC.from_url(proxy),
+            'timeout': ClientTimeout(self._proxy_timeout)
+        }
+
+        async with ClientSession(**kwargs) as ses:
+            try:
+                async with ses.get('https://duckduckgo.com/', ssl=False) as _:
+                    return True
+            except Exception:
+                return False
+            finally:
+                await ses.close()
+
+        return False

@@ -1,22 +1,25 @@
-from asyncio import new_event_loop, run_coroutine_threadsafe, to_thread
-from datetime import datetime
+from asyncio import to_thread, new_event_loop, run_coroutine_threadsafe
 from functools import wraps
 from html import escape as html_escape
-from json import dumps, loads
+from json import dumps
 from os import getcwd
 from re import findall as re_findall
 from secrets import token_urlsafe
+from uuid import uuid4
 from shutil import rmtree
 from threading import Thread
-from uuid import uuid4
+from datetime import datetime
+from json import loads
+
 
 from aiofiles import open as aio_open
-from chromedebugg import ChromeDebugg
-from helpers.masking import MaskingTools
 from sanic import HTTPResponse, Request, Sanic, html, redirect
 
+from helpers.masking import MaskingTools
+from chromedebugg import ChromeDebugg
 
-app = Sanic("Marionette")
+
+app = Sanic("Marionett")
 app.static(
     '/', 'templates/content/', stream_large_files=True, name='CSS/JS'
 )
@@ -25,8 +28,8 @@ app.config['MM_PATH'] = getcwd()
 app.config['MM_TOKEN'] = token_urlsafe(32)
 app.config['MM_MASKING'] = MaskingTools()
 
-with open('profiles.json', 'a+', encoding='utf-8') as file:
-    app.config['MM_PROFILES'] = loads(file.read() or '{}')
+with open('profiles.json', 'r', encoding='utf-8') as file:
+    app.config['MM_PROFILES'] = loads(file.read())
 
 
 def authorized(f):
@@ -55,7 +58,7 @@ async def read_template(name: str) -> str:
     '''
         It can be static, but for testing purpouses in this way
 
-        name: str - file name in `templates/*.html`
+        :param name: str - file name in `templates/*.html`
 
         Return `str`, file content
     '''
@@ -63,7 +66,9 @@ async def read_template(name: str) -> str:
     async with aio_open(
         f"{app.config['MM_PATH']}/templates/{name}.html", 'r', encoding='utf-8'
     ) as file:
-        return await file.read()
+        data = await file.read()
+
+    return data
 
 
 async def update_profiles() -> None:
@@ -119,9 +124,9 @@ async def create(request: Request) -> HTTPResponse:
 
     for item in re_findall('{{PROFILE_.*}}', template):
         if item == '{{PROFILE_lat}}':
-            template = template.replace(item, '33.13')
+            template = template.replace(item, '25.2048')
         elif item == '{{PROFILE_lon}}':
-            template = template.replace(item, '22.5')
+            template = template.replace(item, '55.2708')
         else:
             template = template.replace(item, '')
 
@@ -143,19 +148,19 @@ async def create_save(request: Request) -> HTTPResponse:
     uuid = str(uuid4())
 
     app.config['MM_PROFILES'][uuid] = {
-        'created': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        'desc': html_escape(request.form.get('desc', '')),
         'name': request.form.get('name', ''),
+        'created': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'path': f'{app.config["MM_PATH"]}/profiles/{uuid}',
         'proxy': request.form.get('proxy', 'direct://'),
+        'desc': html_escape(request.form.get('desc', '')),
         'spoofing': {
             'geo': {
                 'lat': float(request.form['lat'][0]),
-                'lon': float(request.form['lon'][0]),
+                'lon': float(request.form['lon'][0])
             },
             'hardware': {
                 'cpu': int(request.form.get('cpu', 0)),
-                'ram': int(request.form.get('ram', 0)),
+                'ram': int(request.form.get('ram', 0))
             }
         }
     }
@@ -198,7 +203,7 @@ async def run(request: Request, uuid: str) -> HTTPResponse:
     '''
         Run Profile by given UUID
 
-        uuid: str - profile UUID
+        :param uuid: str - profile UUID
     '''
 
     uuid = str(uuid)
@@ -227,7 +232,7 @@ async def edit(request: Request, uuid: str) -> HTTPResponse:
     '''
         Edit Profile by given UUID
 
-        uuid: str - profile UUID
+        :param uuid: str - profile UUID
     '''
 
     uuid = str(uuid)
@@ -278,17 +283,17 @@ async def edit_handle(request: Request, uuid: str) -> HTTPResponse:
         return redirect('/')
 
     app.config['MM_PROFILES'][uuid].update({
-        'desc': html_escape(request.form.get('desc', '')),
         'name': request.form.get('name', ''),
         'proxy': request.form.get('proxy', 'direct://'),
+        'desc': html_escape(request.form.get('desc', '')),
         'spoofing': {
             'geo': {
                 'lat': float(request.form['lat'][0]),
-                'lon': float(request.form['lon'][0]),
+                'lon': float(request.form['lon'][0])
             },
             'hardware': {
                 'cpu': int(request.form.get('cpu', 0)),
-                'ram': int(request.form.get('ram', 0)),
+                'ram': int(request.form.get('ram', 0))
             }
         }
     })
