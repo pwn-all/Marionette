@@ -38,9 +38,9 @@ Not supported at moment:
 ## Requirements
 1. Installed `Chrome`
 2. Installed `Python 3.11`+
-3. `pip install asyncio aiohttp aiofiles timezonefinder shapely sanic`
+3. `pip install asyncio aiohttp aiofiles timezonefinder shapely sanic python-socks`
 
 ## Warning
 1. Using a proxy - can only give you a greater risk of being sent to a `shadow ban` or given a `red notice`. Virtually the most basic Passive fingerprint techniques can preclude the use of VPN/Proxy. You should choose a proxy server OS equal to the one you are spoofing. Otherwise it is useless
-2. You can change default locations of Chrome in `chromedebugg.py` at line `216`
-3. You can change default args for Chrome launch in `chromedebugg.py` at line `230`
+2. You can change default locations of Chrome in `chrome_settings.json`['location']
+3. You can change default args for Chrome launch in `chrome_settings.json`['default_args']
