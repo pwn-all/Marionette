@@ -112,7 +112,7 @@ class LocalTCP(Protocol):
             )
             self.transport.write(
                 self.socks_reply(0, bind_addr, bind_port)
-            )
+            )[:2]
             self.stage = self.STAGE_CONNECT
 
     async def get_dst_addr(self, dst_addr_type: int) -> str:
